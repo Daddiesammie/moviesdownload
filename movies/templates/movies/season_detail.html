@@ -1,0 +1,20 @@
+{% extends 'movies/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">{{ season.series.title }} - Season {{ season.season_number }}</h1>
+    
+    <div class="grid gap-4">
+        {% for episode in season.episodes.all %}
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-xl font-semibold">Episode {{ episode.episode_number }}: {{ episode.title }}</h2>
+            <p class="mt-2">{{ episode.description }}</p>
+            <a href="{% url 'movies:episode_download' episode.id %}" 
+               class="mt-2 inline-block bg-blue-500 text-white px-4 py-2 rounded">
+                Download Episode
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
