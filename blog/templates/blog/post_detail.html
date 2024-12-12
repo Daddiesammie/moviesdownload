@@ -106,7 +106,7 @@
 
 <script>
     // Voting functionality
-function handleVote(action) {
+    function handleVote(action) {
     fetch(`{% url 'blog:handle_vote' post.id %}`, {
         method: 'POST',
         headers: {
@@ -124,13 +124,28 @@ function handleVote(action) {
     })
     .then(data => {
         if (data && data.status === 'success') {
+            // Update the vote count
             document.getElementById(`${action}Count`).textContent = data.count;
+            
+            // Add animation effect
             const icon = document.getElementById(`${action}Icon`);
-            icon.classList.add('scale-125');
-            setTimeout(() => icon.classList.remove('scale-125'), 200);
+            icon.classList.add('scale-125', 'text-primary-light');
+            
+            // Remove animation after effect completes
+            setTimeout(() => {
+                icon.classList.remove('scale-125');
+            }, 200);
+            
+            // Update opposite button if needed
+            const oppositeAction = action === 'like' ? 'dislike' : 'like';
+            if (data.opposite_count !== undefined) {
+                document.getElementById(`${oppositeAction}Count`).textContent = data.opposite_count;
+                document.getElementById(`${oppositeAction}Icon`).classList.remove('text-primary-light');
+            }
         }
     });
 }
+
 
 // Dynamic Comments
 const commentForm = document.getElementById('commentForm');

@@ -32,26 +32,36 @@ def handle_vote(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     data = json.loads(request.body)
     action = data.get('action')
-
+    
+    # Get or create vote
     vote, created = Vote.objects.get_or_create(
         post=post,
         user=request.user,
         defaults={'vote_type': action}
     )
-
+    
+    # Handle vote change
     if not created and vote.vote_type != action:
         vote.vote_type = action
         vote.save()
-
-    # Update post vote counts
-    post.likes = post.vote_set.filter(vote_type='like').count()
-    post.dislikes = post.vote_set.filter(vote_type='dislike').count()
+    elif not created and vote.vote_type == action:
+        vote.delete()
+    
+    # Get updated counts
+    likes_count = post.vote_set.filter(vote_type='like').count()
+    dislikes_count = post.vote_set.filter(vote_type='dislike').count()
+    
+    # Update post counts
+    post.likes = likes_count
+    post.dislikes = dislikes_count
     post.save()
-
+    
     return JsonResponse({
         'status': 'success',
-        'count': post.likes if action == 'like' else post.dislikes
+        'count': likes_count if action == 'like' else dislikes_count,
+        'opposite_count': dislikes_count if action == 'like' else likes_count
     })
+
 
 @login_required
 @require_POST
