@@ -6,36 +6,40 @@
     <form method="GET" action="{% url 'movies:content_search' %}" class="mb-8">
         <div class="flex gap-2">
             <input type="text" name="q" 
-                   class="flex-1 p-2 border rounded" 
+                   class="flex-1 p-2 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-yellow-500 rounded text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-primary-light dark:focus:border-yellow-600" 
                    placeholder="Search movies and series..."
                    value="{{ request.GET.q }}">
             <button type="submit" 
-                    class="px-4 py-2 bg-blue-500 text-white rounded">
+                    class="px-6 py-2 bg-primary-light dark:bg-primary-dark hover:opacity-90 text-white dark:text-black font-semibold rounded transition duration-300">
                 Search
             </button>
         </div>
     </form>
 
     <!-- Results -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {% for content in contents %}
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <a href="{{ content.get_absolute_url }}">
-                <img src="{{ content.thumbnail_url }}" 
-                     alt="{{ content.title }}" 
-                     class="w-full h-48 object-cover">
+        <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-yellow-500 overflow-hidden transform hover:scale-105 transition duration-300 shadow-lg">
+            <a href="{{ content.get_absolute_url }}" class="block">
+                <div class="relative">
+                    <img src="{{ content.thumbnail_url }}" 
+                         alt="{{ content.title }}" 
+                         class="w-full h-48 object-cover">
+                    <div class="absolute top-0 right-0 m-2">
+                        <span class="text-sm bg-primary-light dark:bg-primary-dark text-white dark:text-black px-2 py-1 rounded-full font-semibold">
+                            {{ content.get_content_type_display }}
+                        </span>
+                    </div>
+                </div>
                 <div class="p-4">
-                    <h2 class="text-xl font-bold">{{ content.title }}</h2>
-                    <p class="text-gray-600">{{ content.release_year }}</p>
-                    <span class="text-sm bg-gray-200 px-2 py-1 rounded">
-                        {{ content.get_content_type_display }}
-                    </span>
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{{ content.title }}</h2>
+                    <p class="text-primary-light dark:text-primary-dark">{{ content.release_year }}</p>
                 </div>
             </a>
         </div>
         {% empty %}
-        <div class="col-span-full text-center py-8">
-            <p>No results found.</p>
+        <div class="col-span-full text-center py-16">
+            <p class="text-primary-light dark:text-primary-dark text-xl">No results found.</p>
         </div>
         {% endfor %}
     </div>
@@ -45,18 +49,18 @@
     <div class="mt-8 flex justify-center gap-2">
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-           class="px-4 py-2 bg-gray-200 rounded">
+           class="px-6 py-2 bg-primary-light dark:bg-primary-dark hover:opacity-90 text-white dark:text-black font-semibold rounded transition duration-300">
             Previous
         </a>
         {% endif %}
         
-        <span class="px-4 py-2">
+        <span class="px-6 py-2 text-primary-light dark:text-primary-dark font-semibold">
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
         </span>
         
         {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
-           class="px-4 py-2 bg-gray-200 rounded">
+           class="px-6 py-2 bg-primary-light dark:bg-primary-dark hover:opacity-90 text-white dark:text-black font-semibold rounded transition duration-300">
             Next
         </a>
         {% endif %}
