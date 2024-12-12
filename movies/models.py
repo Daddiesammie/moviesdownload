@@ -33,6 +33,7 @@ class Content(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    youtube_trailer_id = models.CharField(max_length=20, blank=True, help_text="YouTube video ID from the URL")
 
     class Meta:
         ordering = ['-created_at']

@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
-from .models import Content, Season, Episode, Movie, Comment
+from .models import Content, Season, Episode, Movie, Comment, Genre
 
 # List Views
 class ContentListView(ListView):
@@ -44,9 +44,24 @@ class ContentDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # Add related content logic
+        current_genres = self.object.genres.all()
+        related_content = Content.objects.filter(
+            genres__in=current_genres,
+            content_type=self.object.content_type
+        ).exclude(
+            id=self.object.id
+        ).distinct().order_by('-release_year')[:5]
+        
+        context['related_content'] = related_content
+        
+        # Keep existing series seasons logic
         if self.object.content_type == 'SERIES':
             context['seasons'] = self.object.seasons.all()
+            
         return context
+
 
 class SeasonDetailView(DetailView):
     template_name = 'movies/season_detail.html'
@@ -162,3 +177,36 @@ def delete_comment(request, comment_id):
         comment.delete()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
+
+class TrailerView(DetailView):
+    model = Content
+    template_name = 'movies/trailer.html'
+    context_object_name = 'content'
+
+class SeriesListView(ListView):
+    template_name = 'movies/series_list.html'
+    context_object_name = 'series_list'
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = Content.objects.filter(content_type='SERIES')
+        
+        # Apply filters
+        genre = self.request.GET.get('genre')
+        year = self.request.GET.get('year')
+        
+        if genre:
+            queryset = queryset.filter(genres__id=genre)
+        if year:
+            queryset = queryset.filter(release_year=year)
+            
+        return queryset.order_by('-release_year')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['genres'] = Genre.objects.all()
+        context['years'] = Content.objects.filter(
+            content_type='SERIES'
+        ).values_list('release_year', flat=True).distinct().order_by('-release_year')
+        return context
+

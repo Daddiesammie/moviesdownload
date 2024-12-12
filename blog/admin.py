@@ -17,7 +17,6 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'post', 'created_at']
+    list_display = ['user', 'post', 'created_at']
     list_filter = ['created_at']
-    search_fields = ['name', 'email', 'content']
-    date_hierarchy = 'created_at'
+    search_fields = ['content', 'user__username']

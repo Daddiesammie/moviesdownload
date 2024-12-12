@@ -18,5 +18,5 @@ urlpatterns = [
     path('content/<int:content_id>/comments/', views.get_comments, name='get_comments'),
     path('content/<int:content_id>/add_comment/', views.add_comment, name='add_comment'),
     path('content/comments/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
-
+    path('content/<slug:slug>/trailer/', views.TrailerView.as_view(), name='trailer'),
 ]

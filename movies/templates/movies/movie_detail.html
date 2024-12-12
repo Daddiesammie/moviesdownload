@@ -28,10 +28,12 @@
                     
                     <!-- Action Buttons -->
                     <div class="mt-6 flex flex-wrap gap-4">
-                        <a href="{{ content.movie.video_url }}" 
-                           class="inline-block bg-primary-light dark:bg-primary-dark text-white dark:text-black px-6 py-2 rounded-lg hover:opacity-90 transition duration-300">
-                            Watch Movie
+                        {% if content.youtube_trailer_id %}
+                        <a href="{% url 'movies:trailer' content.slug %}" 
+                        class="inline-block bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                            Watch Trailer
                         </a>
+                        {% endif %}
                         <a href="{{ content.movie.download_url }}" 
                            class="inline-block bg-green-500 dark:bg-green-600 text-white px-6 py-2 rounded-lg hover:opacity-90 transition duration-300">
                             Download Movie
@@ -72,6 +74,32 @@
                     <p><span class="font-semibold">Release Year:</span> {{ content.release_year }}</p>
                     <p><span class="font-semibold">Duration:</span> {{ content.duration }} minutes</p>
                     <!-- Add more movie details as needed -->
+                </div>
+                <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Related Videos</h2>
+                    <div id="relatedVideos" class="space-y-4">
+                        {% for related in related_content %}
+                        <a href="{{ related.get_absolute_url }}" 
+                           class="block hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition duration-300">
+                            <div class="flex space-x-3">
+                                <img src="{{ related.thumbnail_url }}" 
+                                     alt="{{ related.title }}"
+                                     class="w-24 h-16 object-cover rounded">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-800 dark:text-white">{{ related.title }}</h3>
+                                    <p class="text-xs text-gray-500">{{ related.release_year }}</p>
+                                    <div class="flex flex-wrap gap-1 mt-1">
+                                        {% for genre in related.genres.all|slice:":2" %}
+                                        <span class="text-xs bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark px-2 py-0.5 rounded-full">
+                                            {{ genre.name }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

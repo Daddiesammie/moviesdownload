@@ -2,24 +2,79 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Blog Posts</h1>
-    
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Latest News & Reviews</h1>
+        <p class="text-gray-600 dark:text-gray-300 mt-2">Stay updated with the latest movie news and reviews</p>
+    </div>
+
+    <!-- Blog Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for post in posts %}
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <img src="{{ post.thumbnail }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
-            <div class="p-4">
-                <h2 class="text-xl font-bold mb-2">{{ post.title }}</h2>
-                <p class="text-gray-600 mb-4">{{ post.created_at|date }}</p>
-                <a href="{{ post.get_absolute_url }}" 
-                   class="inline-block bg-blue-500 text-white px-4 py-2 rounded">
-                    Read More
-                </a>
+        <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+            <div class="relative">
+                <img src="{{ post.thumbnail }}" 
+                     alt="{{ post.title }}" 
+                     class="w-full h-48 object-cover">
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                    <span class="text-white text-sm">{{ post.created_at|date:"F d, Y" }}</span>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="flex flex-wrap gap-2 mb-3">
+                    {% for category in post.categories.all %}
+                    <span class="text-xs bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark px-2 py-1 rounded-full">
+                        {{ category.name }}
+                    </span>
+                    {% endfor %}
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-3">{{ post.title }}</h2>
+                
+                <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{{ post.excerpt }}</p>
+
+                <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center space-x-2">
+                        <img src="{{ post.author.avatar_url|default:'default_avatar.png' }}" 
+                             alt="{{ post.author.username }}"
+                             class="w-8 h-8 rounded-full">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ post.author.username }}</span>
+                    </div>
+                    
+                    <a href="{{ post.get_absolute_url }}" 
+                       class="inline-block bg-primary-light dark:bg-primary-dark text-white dark:text-black px-4 py-2 rounded-lg hover:opacity-90 transition duration-300">
+                        Read More
+                    </a>
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
 
-    {% include 'blog/includes/pagination.html' %}
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-8">
+        <div class="flex justify-center space-x-4">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" 
+               class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300">
+                Previous
+            </a>
+            {% endif %}
+            
+            <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" 
+               class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300">
+                Next
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
