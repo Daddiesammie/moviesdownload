@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'taggit',
     'tailwind',
+    'accounts',
     # Local apps
     'movies.apps.MoviesConfig',
     'blog.apps.BlogConfig',
@@ -135,3 +136,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'movies:movie_list'
+LOGOUT_REDIRECT_URL = 'movies:movie_list'

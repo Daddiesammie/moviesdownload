@@ -15,4 +15,8 @@ urlpatterns = [
     path('search/', views.ContentSearchView.as_view(), name='content_search'),
     # Add to urlpatterns
     path('content/<int:content_id>/vote/', views.handle_content_vote, name='handle_content_vote'),
+    path('content/<int:content_id>/comments/', views.get_comments, name='get_comments'),
+    path('content/<int:content_id>/add_comment/', views.add_comment, name='add_comment'),
+    path('content/comments/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
+
 ]

@@ -1,0 +1,42 @@
+{% extends 'movies/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Register</h2>
+        
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 mb-2">Username</label>
+                <input type="text" name="username" 
+                       class="w-full px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            </div>
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <input type="email" name="email" 
+                       class="w-full px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            </div>
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                <input type="password" name="password1" 
+                       class="w-full px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            </div>
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
+                <input type="password" name="password2" 
+                       class="w-full px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            </div>
+            <button type="submit" 
+                    class="w-full px-4 py-2 bg-primary-light dark:bg-primary-dark text-white dark:text-black rounded hover:opacity-90">
+                Register
+            </button>
+        </form>
+        
+        <p class="mt-4 text-center text-gray-600 dark:text-gray-400">
+            Already have an account? 
+            <a href="{% url 'accounts:login' %}" class="text-primary-light dark:text-primary-dark">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
